@@ -24,6 +24,13 @@
     <p>
         <a href="/new_item">Uusi ilmoitus</a>
     </p>
+
+    <h2>Arvostelut</h2>
+    <ul>
+        {% for item in items %}
+        <li><a href="/item/{{ item.id }}"> {{ item.book_name }} {{ item.author }} {{ item.grade}}</li>
+        {% endfor %}
+    </ul>
 </body>
 
 </html>
