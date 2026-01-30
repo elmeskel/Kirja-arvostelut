@@ -18,8 +18,15 @@
     <p>
         Arvio: {{item.review}}
     </p>
+
+    {% if session.user_id == item.user_id%}
+    <p>
+        <a href="/edit_item/{{ item.id }}">Muokkaa</a>
+    </p>
+    {% endif %}
     <p>
         <a href="/">Takaisin<a>
+    </p>
 </body>
 
 </html>
