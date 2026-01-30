@@ -33,3 +33,11 @@ def update_item(item_id,book_name, author, grade, review):
 def delete_item(item_id):
     sql = "DELETE FROM items WHERE id == ?"
     db.execute(sql, [item_id])
+
+def search_items(query):
+    sql = """SELECT id, book_name, author, grade
+            FROM items
+            WHERE book_name LIKE ? OR review LIKE ? OR author LIKE ?
+            ORDER BY id DESC"""
+    like = "%" + query + "%"
+    return db.query(sql, [like, like, like])
