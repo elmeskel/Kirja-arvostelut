@@ -21,7 +21,10 @@
 
     {% if session.user_id == item.user_id%}
     <p>
-        <a href="/edit_item/{{ item.id }}">Muokkaa</a>
+        <a href="/edit_item/{{ item.id }}">Muokkaa arvostelua</a>
+    </p>
+    <p>
+        <a href="/delete_item/{{ item.id }}">Poista arvostelu</a>
     </p>
     {% endif %}
     <p>

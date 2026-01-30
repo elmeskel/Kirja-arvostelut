@@ -53,6 +53,19 @@ def update_item():
 
     return redirect("/item/" + str(item_id))
 
+@app.route("/delete_item/<int:item_id>", methods = ["GET", "POST"])
+def delete_item(item_id):
+    if request.method == "GET":
+        item = items.get_item(item_id)
+        return render_template("delete_item.html", item=item)
+
+    if request.method == "POST":
+        if "remove" in request.form:
+            items.delete_item(item_id)
+            return redirect("/")
+        else:
+            return redirect("/item/" + str(item_id))
+
 @app.route("/register")
 def register():
     return render_template("register.html")
@@ -81,7 +94,7 @@ def login():
         if request.method == "POST":    
             username = request.form["username"]
             password = request.form["password"]
-            
+
         sql = "SELECT id, password_hash FROM users WHERE username = ?"
         result = db.query(sql, [username])[0]
         user_id = result["id"]

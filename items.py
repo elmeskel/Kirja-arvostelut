@@ -29,3 +29,7 @@ def update_item(item_id,book_name, author, grade, review):
                                 review = ?
                             WHERE id == ?"""
     db.execute(sql, [book_name, author, grade, review, item_id])
+
+def delete_item(item_id):
+    sql = "DELETE FROM items WHERE id == ?"
+    db.execute(sql, [item_id])
