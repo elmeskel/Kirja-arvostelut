@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ user.username }}</title>
+</head>
+
+<body>
+    <h1>{{ user.username }}</h1>
+    <p> 
+        Arvosteluita yhteensä: {{ reviews | count }}
+    </p>
+
+    <h2>Arvostelut</h2>
+    <ul>
+        {% for review in reviews %}
+        <li><a href="/item/{{ review.id }}"> {{ review.book_name }} {{ review.author }} {{ review.grade}}</a></li>
+        {% endfor %}
+    </ul>
+
+    <p>
+        <a href="/">Takaisin<a>
+    </p>
+</body>
+
+</html>
