@@ -1,4 +1,6 @@
 import sqlite3
+import markupsafe
+import re
 from flask import Flask
 from flask import abort, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -48,7 +50,12 @@ def create_item():
     grade = request.form["grade"]
     review = request.form["review"]
     user_id = session["user_id"]
+
     if not book_name or not author or not grade or not review:
+        abort(403)
+    if len(book_name)>30 or len(author)>20 or len(review)>1000:
+        abort(403)
+    if not re.search("^(10|[1-9])$", grade):
         abort(403)
     items.add_item(book_name, author, grade, review, user_id)
     return redirect("/")
@@ -75,7 +82,12 @@ def update_item():
     author = request.form["author"]
     grade = request.form["grade"]
     review = request.form["review"]
-    if not book_name or author or grade or review:
+
+    if not book_name or not author or not grade or not review:
+        abort(403)
+    if len(book_name)>30 or len(author)>20 or len(review)>1000:
+        abort(403)
+    if not re.search("^10|[1-9]$", grade):
         abort(403)
 
     items.update_item(item_id, book_name, author, grade, review)
