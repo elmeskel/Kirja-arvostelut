@@ -10,22 +10,19 @@
     <form action="/create_item" method="post">
     <p>
         Kirjan nimi: <br />
-        <input type="text" name="book_name" />
+        <input type="text" name="book_name" required/>
     </p>
     <p>
         Kirjailija: <br />
-        <input type="text" name="author" />
+        <input type="text" name="author" required/>
     </p>
     <p>
         Kokonaisarvosana (1–10): <br />
-        <input type="number" name="grade" min="1" max="10" step="0.5"/>
+        <input type="number" name="grade" min="1" max="10" step="0.5" required/>
     </p>
-
-    <input type="submit" value="Luo arvostelu" />
-    
     <p>
         Arvostelu: <br />
-        <textarea name="review" rows="15" cols="80"></textarea>
+        <textarea name="review" rows="15" cols="80" required></textarea>
     </p>
 </form>
 
