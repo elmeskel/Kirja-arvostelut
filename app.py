@@ -9,6 +9,9 @@ import items
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+def check_login():
+    if "user_id" not in session:
+        abort(403)
 
 @app.route("/")
 def index():
@@ -34,10 +37,12 @@ def show_item(item_id):
 
 @app.route("/new_item")
 def new_item():
+    check_login()
     return render_template("new_item.html")
 
 @app.route("/create_item", methods=["POST"])
 def create_item():
+    check_login()
     book_name = request.form["book_name"]
     author = request.form["author"]
     grade = request.form["grade"]
@@ -46,11 +51,11 @@ def create_item():
     if not book_name or author or grade or review:
         abort(403)
     items.add_item(book_name, author, grade, review, user_id)
-
     return redirect("/")
 
 @app.route("/edit_item/<int:item_id>")
 def edit_item(item_id):
+    check_login()
     item = items.get_item(item_id)
     if not item:
         abort(404)
@@ -137,6 +142,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["user_id"]
-    del session["username"]
+    if "user_id" in session:
+        del session["user_id"]
+        del session["username"]
     return redirect("/")
