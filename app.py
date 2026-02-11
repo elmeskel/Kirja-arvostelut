@@ -43,9 +43,10 @@ def create_item():
     grade = request.form["grade"]
     review = request.form["review"]
     user_id = session["user_id"]
-
+    if not book_name or author or grade or review:
+        abort(403)
     items.add_item(book_name, author, grade, review, user_id)
-    
+
     return redirect("/")
 
 @app.route("/edit_item/<int:item_id>")
@@ -69,6 +70,8 @@ def update_item():
     author = request.form["author"]
     grade = request.form["grade"]
     review = request.form["review"]
+    if not book_name or author or grade or review:
+        abort(403)
 
     items.update_item(item_id, book_name, author, grade, review)
 
