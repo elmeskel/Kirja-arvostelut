@@ -48,7 +48,7 @@ def create_item():
     grade = request.form["grade"]
     review = request.form["review"]
     user_id = session["user_id"]
-    if not book_name or author or grade or review:
+    if not book_name or not author or not grade or not review:
         abort(403)
     items.add_item(book_name, author, grade, review, user_id)
     return redirect("/")
