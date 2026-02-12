@@ -35,6 +35,20 @@
         <a href="/delete_item/{{ item.id }}">Poista arvostelu</a>
     </p>
     {% endif %}
+    <h2>Kommentit</h2>
+    <p>
+        {% for com in comments%}
+            <li><a href="/user/{{ com.user_id }}">{{ com.username }}</a>: {{ com.comment }}</li>
+        {% endfor %}
+    </p>
+    <h3>Uusi kommentti</h3>
+    <p>
+    <form action="/new_comment" method="post">
+        <textarea name="comment" rows="5" cols="40" required maxlength="500"></textarea><br>
+        <input type="hidden" name="item_id" value="{{ item.id }}" />
+        <input type="submit" value="Lisää kommentti" />
+    </form>
+    </p>
     <p>
         <a href="/">Takaisin<a>
     </p>

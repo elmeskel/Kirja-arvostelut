@@ -45,7 +45,8 @@ def show_item(item_id):
     if not item:
         abort(404)
     classes = items.get_classes(item_id)
-    return render_template("show_item.html", item=item, classes=classes)
+    comments = items.get_comments(item_id)
+    return render_template("show_item.html", item=item, classes=classes, comments=comments)
 
 @app.route("/new_item")
 def new_item():
@@ -66,7 +67,7 @@ def create_item():
         abort(403)
     if len(book_name)>30 or len(author)>20 or len(review)>1000:
         abort(403)
-    if not re.search("10|^[1-9]\.[05]", grade):
+    if not re.search(r"10|^[1-9]\.[05]", grade):
         abort(403)
     user_id = session["user_id"]
     
@@ -118,7 +119,7 @@ def update_item():
         abort(403)
     if len(book_name)>30 or len(author)>20 or len(review)>1000:
         abort(403)
-    if not re.search("10|^[1-9]\.[05]", grade):
+    if not re.search(r"10|[1-9]\.[05]", grade):
         abort(403)
 
     all_classes = items.get_all_classes()
@@ -152,6 +153,22 @@ def delete_item(item_id):
             return redirect("/")
         else:
             return redirect("/item/" + str(item_id))
+
+@app.route("/new_comment", methods=["POST"])
+def new_comment():
+    require_login()
+    
+    comment = request.form["comment"]
+    if not  comment:
+        abort(403)
+    if len(comment)>500:
+        abort(403)
+
+    item_id = request.form["item_id"]
+    user_id = session["user_id"]
+
+    items.create_comment(item_id, user_id, comment)
+    return redirect("/item/" + str(item_id))
 
 @app.route("/register")
 def register():
