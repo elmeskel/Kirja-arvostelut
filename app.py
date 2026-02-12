@@ -50,7 +50,8 @@ def show_item(item_id):
 @app.route("/new_item")
 def new_item():
     require_login()
-    return render_template("new_item.html")
+    classes = items.get_all_classes()
+    return render_template("new_item.html", classes=classes)
 
 @app.route("/create_item", methods=["POST"])
 def create_item():
@@ -60,7 +61,6 @@ def create_item():
     author = request.form["author"]
     grade = request.form["grade"]
     review = request.form["review"]
-    user_id = session["user_id"]
 
     if not book_name or not author or not grade or not review:
         abort(403)
@@ -68,14 +68,18 @@ def create_item():
         abort(403)
     if not re.search("^(10|[1-9])$", grade):
         abort(403)
-
-    genre = request.form["genre"]
-    period = request.form["period"]
+    user_id = session["user_id"]
+    
+    all_classes = items.get_all_classes()
     classes = []
-    if genre:
-        classes.append(("Genre", genre))
-    if period:
-        classes.append(("Aikakausi", period))
+    for entry in request.form.getlist("classes"):
+        if entry:
+            class_title, class_value = entry.split(":")
+            if class_title not in all_classes:
+                abort(403)
+            if class_value not in all_classes[class_title]:
+                abort(403)
+            classes.append((class_title, class_value))
 
     items.add_item(book_name, author, grade, review, user_id, classes)
     return redirect("/")
