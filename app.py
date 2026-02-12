@@ -8,6 +8,7 @@ import db
 import items
 import users
 
+
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
@@ -43,7 +44,8 @@ def show_item(item_id):
     item = items.get_item(item_id)
     if not item:
         abort(404)
-    return render_template("show_item.html", item=item)
+    classes = items.get_classes(item_id)
+    return render_template("show_item.html", item=item, classes=classes)
 
 @app.route("/new_item")
 def new_item():
@@ -53,6 +55,7 @@ def new_item():
 @app.route("/create_item", methods=["POST"])
 def create_item():
     require_login()
+    
     book_name = request.form["book_name"]
     author = request.form["author"]
     grade = request.form["grade"]
@@ -65,7 +68,16 @@ def create_item():
         abort(403)
     if not re.search("^(10|[1-9])$", grade):
         abort(403)
-    items.add_item(book_name, author, grade, review, user_id)
+
+    genre = request.form["genre"]
+    period = request.form["period"]
+    classes = []
+    if genre:
+        classes.append(("Genre", genre))
+    if period:
+        classes.append(("Aikakausi", period))
+
+    items.add_item(book_name, author, grade, review, user_id, classes)
     return redirect("/")
 
 @app.route("/edit_item/<int:item_id>")

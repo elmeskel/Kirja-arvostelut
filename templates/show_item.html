@@ -19,6 +19,14 @@
         Arvio: {{item.review}}
     </p>
 
+    <p>
+    {% for class in classes %}
+    <p>
+    {{class.title}}: {{class.value}}
+    </p>
+    {% endfor %}
+    </p>
+
     {% if session.user_id == item.user_id%}
     <p>
         <a href="/edit_item/{{ item.id }}">Muokkaa arvostelua</a>
