@@ -42,13 +42,21 @@ def get_item(item_id):
     result = db.query(sql, [item_id])
     return result[0] if result else None
 
-def update_item(item_id,book_name, author, grade, review):
+def update_item(item_id,book_name, author, grade, review, classes):
     sql = """UPDATE items   SET book_name = ?,
                                 author = ?,
                                 grade = ?,
                                 review = ?
                             WHERE id == ?"""
     db.execute(sql, [book_name, author, grade, review, item_id])
+    
+    sql = "DELETE FROM item_classes WHERE item_id = ?"
+    db.execute(sql, [item_id])
+    
+    sql = "INSERT INTO item_classes (item_id, title, value) VALUES (?, ?, ?)"
+    for class_title, class_value in classes:
+        db.execute(sql, [item_id, class_title, class_value])
+
 
 def delete_item(item_id):
     sql = "DELETE FROM items WHERE id == ?"

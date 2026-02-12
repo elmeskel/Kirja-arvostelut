@@ -93,7 +93,14 @@ def edit_item(item_id):
     if item["user_id"] != session["user_id"]:
         abort(403)
 
-    return render_template("edit_item.html", item=item)
+    all_classes = items.get_all_classes()
+    classes = {}
+    for my_class in all_classes:
+        classes[my_class] = ""
+    for entry in items.get_classes(item_id):
+        classes[entry["title"]] = entry["value"]
+        
+    return render_template("edit_item.html", item=item, classes=classes, all_classes=all_classes)
 
 @app.route("/update_item", methods=["POST"])
 def update_item():
@@ -111,10 +118,21 @@ def update_item():
         abort(403)
     if len(book_name)>30 or len(author)>20 or len(review)>1000:
         abort(403)
-    if not re.search("^10|[1-9]$", grade):
+    if not re.search("10|^[1-9]\.[05]", grade):
         abort(403)
 
-    items.update_item(item_id, book_name, author, grade, review)
+    all_classes = items.get_all_classes()
+    classes = []
+    for entry in request.form.getlist("classes"):
+        if entry:
+            class_title, class_value = entry.split(":")
+            if class_title not in all_classes:
+                abort(403)
+            if class_value not in all_classes[class_title]:
+                abort(403)
+            classes.append((class_title, class_value))
+
+    items.update_item(item_id, book_name, author, grade, review, classes)
 
     return redirect("/item/" + str(item_id))
 
