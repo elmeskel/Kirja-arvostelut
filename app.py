@@ -66,7 +66,7 @@ def create_item():
         abort(403)
     if len(book_name)>30 or len(author)>20 or len(review)>1000:
         abort(403)
-    if not re.search("^(10|[1-9])$", grade):
+    if not re.search("10|^[1-9]\.[05]", grade):
         abort(403)
     user_id = session["user_id"]
     
