@@ -19,12 +19,12 @@ def create_user(username, password):
 
 def check_login(username, password):
     sql = "SELECT id, password_hash FROM users WHERE username = ?"
-    result = db.query(sql, [username])[0]
+    result = db.query(sql, [username])
     if not result:
         return None
     
-    user_id = result["id"]
-    password_hash = result["password_hash"]
+    user_id = result[0]["id"]
+    password_hash = result[0]["password_hash"]
     print(password_hash)
     if check_password_hash(password_hash, password):
         return user_id
