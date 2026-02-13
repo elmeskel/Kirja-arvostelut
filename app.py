@@ -1,5 +1,5 @@
 import sqlite3
-import markupsafe
+import secrets
 import re
 from flask import Flask
 from flask import abort, redirect, render_template, request, session
@@ -14,6 +14,10 @@ app.secret_key = config.secret_key
 
 def require_login():
     if "user_id" not in session:
+        abort(403)
+
+def check_csrf():
+    if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
 
 @app.route("/")
@@ -57,6 +61,7 @@ def new_item():
 @app.route("/create_item", methods=["POST"])
 def create_item():
     require_login()
+    check_csrf()
     
     book_name = request.form["book_name"]
     author = request.form["author"]
@@ -70,7 +75,7 @@ def create_item():
     if not re.search(r"10|^[1-9]\.[05]", grade):
         abort(403)
     user_id = session["user_id"]
-    
+
     all_classes = items.get_all_classes()
     classes = []
     for entry in request.form.getlist("classes"):
@@ -105,6 +110,9 @@ def edit_item(item_id):
 
 @app.route("/update_item", methods=["POST"])
 def update_item():
+    require_login()
+    check_csrf()
+
     item_id = request.form["item_id"]
     item = items.get_item(item_id)
     if item["user_id"] != session["user_id"]:
@@ -139,6 +147,8 @@ def update_item():
 
 @app.route("/delete_item/<int:item_id>", methods = ["GET", "POST"])
 def delete_item(item_id):
+    require_login()
+
     item = items.get_item(item_id)
     if not item:
         abort(404)
@@ -148,6 +158,7 @@ def delete_item(item_id):
     if request.method == "GET":
         return render_template("delete_item.html", item=item)
     if request.method == "POST":
+        check_csrf()
         if "remove" in request.form:
             items.delete_item(item_id)
             return redirect("/")
@@ -157,6 +168,7 @@ def delete_item(item_id):
 @app.route("/new_comment", methods=["POST"])
 def new_comment():
     require_login()
+    check_csrf()
     
     comment = request.form["comment"]
     if not  comment:
@@ -192,17 +204,19 @@ def create():
 def login():
         if request.method == "GET":
             return render_template("login.html")
+
         if request.method == "POST":    
             username = request.form["username"]
             password = request.form["password"]
 
-        user_id = users.check_login(username, password)
-        if user_id:
-            session["user_id"] = user_id
-            session["username"] = username
-            return redirect("/")
-        else:
-            return "VIRHE: väärä tunnus tai salasana"
+            user_id = users.check_login(username, password)
+            if user_id:
+                session["user_id"] = user_id
+                session["username"] = username
+                session["csrf_token"] = secrets.token_hex(16)
+                return redirect("/")
+            else:
+                return "VIRHE: väärä tunnus tai salasana"
 
 @app.route("/logout")
 def logout():
