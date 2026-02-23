@@ -18,7 +18,7 @@
         Kokonaisarvosana: {{ item.grade}}
     </p>
     <p>
-        Arvio: {{item.review}}
+        Arvio:<br>{{ item.review | show_lines }}
     </p>
 
     <p>
@@ -40,7 +40,7 @@
     <h3>Kommentit</h3>
     <p>
         {% for com in comments%}
-            <li><a href="/user/{{ com.user_id }}">{{ com.username }}</a>: {{ com.comment }}</li>
+            <li><a href="/user/{{ com.user_id }}">{{ com.username }}</a>: {{ com.comment | show_lines}}</li>
         {% endfor %}
     </p>
     <h3>Uusi kommentti</h3>

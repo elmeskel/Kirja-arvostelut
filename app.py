@@ -4,7 +4,7 @@ import re
 from flask import Flask
 from flask import abort, flash, redirect, render_template, request, session
 import config
-import db
+import markupsafe
 import items
 import users
 
@@ -19,6 +19,12 @@ def require_login():
 def check_csrf():
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
+
+@app.template_filter()
+def show_lines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    return markupsafe.Markup(content)
 
 @app.route("/")
 def index():
