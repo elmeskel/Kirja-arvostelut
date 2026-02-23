@@ -9,15 +9,15 @@
 <body>
     <div class="header">
         <h1>
-            Tervetuloa arvioimaan kirjoja ja lukemaan muiden arvosteluita!
+            Sivusto kirjojen arviointiin ja keskusteluun!
         </h1>
     </div>
+    {% if session.username %}
+    <p>
+        Olet kirjautunut sisään käyttäjällä {{ session.username }}
+    </p>
+    {% endif %}
     <div class="nav">
-        {% if session.username %}
-        <p>
-            Tervetuloa {{ session.username }}!
-        </p>
-        {% endif %}
         <p>
             <a href="/">Etusivu</a> |
             <a href="/search_item">Hae arvosteluita</a> | 

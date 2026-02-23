@@ -2,17 +2,19 @@ body {
   margin: auto;
   max-width: 50em;
   font-family: sans-serif;
-  background-color: lightgoldenrodyellow;
+  background: linear-gradient(to right, magenta, cyan);
 }
 
 .header {
   color: black;
-  padding: 1em;
-  margin: 0.5em 0;
+  text-align: center;
+  margin: 2em;
 }
 
 .nav {
-  background-color: lightcyan;
+  border: 7px double black;
+  background: linear-gradient(to bottom, magenta, cyan);
+  text-align: center;
   margin: 1em;
   padding: 0.5em;
   margin: 0.5em 0;
@@ -22,7 +24,7 @@ body {
   border: 2px solid black;
   margin: 1em;
   padding: 0.2em 0.5em;
-  background-color: lightgray;
+  background: linear-gradient(to right,cyan, magenta);
 }
 
 .info {
