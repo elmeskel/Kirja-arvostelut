@@ -1,50 +1,41 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-    <title>Uusi arvostelu</title>
-</head>
+{% block title %}Uusi arvostelu{% endblock %}
 
-<body>
-    <h1>Uusi arvostelu</h1>
-    <form action="/create_item" method="post">
-    <p>
-        Kirjan nimi: <br />
-        <input type="text" name="book_name" required maxlength="50"/>
-    </p>
-    <p>
-        Kirjailija: <br />
-        <input type="text" name="author" required maxlength="20"/>
-    </p>
-    <p>
-        Kokonaisarvosana (1–10): <br />
-        <input type="number" name="grade" min="1" max="10" step="0.5" required/>
-    </p>
-    <p>
-        Arvostelu: <br />
-        <textarea name="review" rows="15" cols="80" required maxlength="1000"></textarea>
-    </p>
-
-    <p>
-    {% for class in classes %}
-        <p>
-        {{class}}:
-        <select name="classes">
-        <option value="">(valitse)</option>
-        {% for option in classes[class] %}
-            <option value="{{class}}:{{option}}">{{ option }}</option>
-        {% endfor %}
-        </select>
-        </p>
-    {% endfor %}
-    </p>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <input type="submit" value="Luo arvostelu" />
-
-</form>
+{% block content %}
+<h2>Uusi arvostelu</h2>
+<form action="/create_item" method="post">
 <p>
-    <a href="/">Takaisin</a>
+    Kirjan nimi: <br />
+    <input type="text" name="book_name" required maxlength="50"/>
 </p>
-</body>
+<p>
+    Kirjailija: <br />
+    <input type="text" name="author" required maxlength="20"/>
+</p>
+<p>
+    Kokonaisarvosana (1–10): <br />
+    <input type="number" name="grade" min="1" max="10" step="0.5" required/>
+</p>
+<p>
+    Arvostelu: <br />
+    <textarea name="review" rows="15" cols="80" required maxlength="1000"></textarea>
+</p>
 
-</html>
+<p>
+{% for class in classes %}
+    <p>
+    {{class}}:
+    <select name="classes">
+    <option value="">(valitse)</option>
+    {% for option in classes[class] %}
+        <option value="{{class}}:{{option}}">{{ option }}</option>
+    {% endfor %}
+    </select>
+    </p>
+{% endfor %}
+</p>
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+<input type="submit" value="Luo arvostelu" />
+</form>
+{% endblock %}

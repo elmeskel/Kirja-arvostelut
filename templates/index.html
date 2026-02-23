@@ -1,39 +1,12 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-    <title>Kirja-arviot!</title>
-</head>
+{% block title %}Kirja-arviot!{% endblock %}
 
-<body>
-    <h1>
-        Tervetuloa arvioimaan kirjoja ja lukemaan muiden arvosteluita!
-    </h1>
-
-    {% if session.username %}
-    <p>
-        Tervetuloa {{ session.username }}!
-    </p>
-    {% endif %}
-    <p>
-        <a href="/search_item">Hae arvosteluita</a> | 
-        {% if session.username%}
-        <a href="/user/{{ session.user_id }}">Oma profiili</a> | 
-        <a href="/new_item">Uusi arvostelu</a> |
-        <a href="/logout">Kirjaudu ulos</a>
-        {% else %}
-        <a href="/login">Kirjaudu sisään</a> | 
-        <a href="/register">Luo tunnus</a>
-        {% endif %}
-    </p>
-
-
-    <h2>Arvostelut</h2>
-    <ul>
-        {% for item in items %}
-        <li><a href="/item/{{ item.id }}"> {{ item.book_name }} {{ item.author }} {{ item.grade}}</a></li>
-        {% endfor %}
-    </ul>
-</body>
-
-</html>
+{% block content %}
+<h2>Arvostelut</h2>
+<ul>
+    {% for item in items %}
+    <li><a href="/item/{{ item.id }}"> {{ item.book_name }} {{ item.author }} {{ item.grade}}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

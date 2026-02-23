@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+    <h1>
+        Tervetuloa arvioimaan kirjoja ja lukemaan muiden arvosteluita!
+    </h1>
+
+    {% if session.username %}
+    <p>
+        Tervetuloa {{ session.username }}!
+    </p>
+    {% endif %}
+    <p>
+        <a href="/">Etusivu</a> |
+        <a href="/search_item">Hae arvosteluita</a> | 
+        {% if session.username%}
+        <a href="/user/{{ session.user_id }}">Oma profiili</a> | 
+        <a href="/new_item">Uusi arvostelu</a> |
+        <a href="/logout">Kirjaudu ulos</a>
+        {% else %}
+        <a href="/login">Kirjaudu sisään</a> | 
+        <a href="/register">Luo tunnus</a>
+        {% endif %}
+    </p>
+
+    {% block content %}{% endblock %}
+
+</body>
+
+</html>

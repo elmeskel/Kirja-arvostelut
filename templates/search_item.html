@@ -1,29 +1,25 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-    <title>Hae arvosteluita</title>
-</head>
+{% block title %}Etsi arvioita{% endblock %}
 
-<body>
-    <h1>Hae arvosteluita</h1>
-    <form action="/search_item" method="GET">
-        Hakusana: <input type="text" name="query" value={{ query }}>
-        <input type="submit" value="Hae">
-    </form>
-    <p>
-        <a href="/">Takaisin </a>
-    </p>
+{% block content %}
 
-    {% if query %}
-    <ul>
-        {% for item in results %}
-        <li><a href="/item/{{ item.id }}">
-            {{ item.book_name}} — 
-            {{ item.author }} — 
-            {{ item.grade }} </a></li>
-        {% endfor %}
-    {% endif %}
-</body>
+<h2>Hae arvosteluita</h2>
+<form action="/search_item" method="GET">
+    Hakusana: <input type="text" name="query" value={{ query }}>
+    <input type="submit" value="Hae">
+</form>
+<p>
+    <a href="/">Takaisin </a>
+</p>
 
-</html>
+{% if query %}
+<ul>
+    {% for item in results %}
+    <li><a href="/item/{{ item.id }}">
+        {{ item.book_name}} — 
+        {{ item.author }} — 
+        {{ item.grade }} </a></li>
+    {% endfor %}
+{% endif %}
+{% endblock %}
