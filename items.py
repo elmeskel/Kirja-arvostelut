@@ -36,7 +36,11 @@ def get_classes(item_id):
     return db.query(sql, [item_id])
 
 def get_items():
-    sql = "SELECT id, book_name, author, grade FROM items ORDER BY id DESC"
+    sql = """SELECT items.id, items.book_name, items.author,
+            items.grade, users.id user_id, users.username
+            FROM items JOIN users ON items.user_id = users.id
+            GROUP BY items.id
+            ORDER BY items.id DESC"""
     return db.query(sql)
 
 def get_item(item_id):
