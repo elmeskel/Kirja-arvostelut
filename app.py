@@ -5,6 +5,7 @@ from flask import Flask
 from flask import abort, flash, redirect, render_template, request, session
 import config
 import markupsafe
+import math
 import items
 import users
 
@@ -27,17 +28,39 @@ def show_lines(content):
     return markupsafe.Markup(content)
 
 @app.route("/")
-def index():
-    all_items = items.get_items()
-    return render_template("index.html", items=all_items)
+@app.route("/<int:page>")
+def index(page=1):
+    page_size = 10
+    item_count = items.item_count()
+    page_count = math.ceil(item_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+    all_items = items.get_items(page, page_size)
+    return render_template("index.html", items=all_items, page=page, page_count=page_count)
 
 @app.route("/user/<int:user_id>")
-def show_user(user_id):
+@app.route("/user/<int:user_id>/<int:page>")
+def show_user(user_id,page=1):
     user = users.get_user(user_id)
     if not user:
         abort(404)
-    reviews = users.get_reviews(user_id)
-    return render_template("show_user.html", user=user, reviews=reviews)
+
+    page_size = 10
+    review_count = users.review_count(user_id)
+    page_count = math.ceil(review_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/user/<int:user_id>/1")
+    if page > page_count:
+        return redirect("/user/<int:user_id>/" + str(page_count))
+
+    items = users.get_reviews(user_id, page, page_size)
+    return render_template("show_user.html", count=review_count, user=user, items=items, page=page, page_count=page_count)
 
 @app.route("/search_item")
 def search_item():

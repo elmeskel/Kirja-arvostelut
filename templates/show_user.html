@@ -4,14 +4,23 @@
 
 {% block content %}
 <h2>{{ user.username }}</h2>
-<p> 
-    Arvosteluita yhteensä: {{ reviews | count }}
+<p>
+    Arvosteluita yhteensä: {{ count }}
 </p>
 
 <h2>Arvostelut</h2>
-<ul>
-    {% for review in reviews %}
-    <li><a href="/item/{{ review.id }}"> {{ review.book_name }} {{ review.author }} {{ review.grade}}</a></li>
-    {% endfor %}
-</ul>
+
+{% for item in items %}
+<div class="item">
+<a href="/item/{{ item.id }}"> {{ item.book_name }}</a> — {{ item.grade }}<br>
+Kirjailija: {{ item.author }}<br>
+</div>
+{% endfor %}
+
+<p>
+    <a href="/user/{{ user.id }}/{{ page - 1 }}">&lt;&lt;</a>
+    {{ page }}/{{ page_count }}
+    <a href="/user/{{ user.id }}/{{ page + 1 }}">&gt;&gt;</a>
+</p>
+
 {% endblock %}

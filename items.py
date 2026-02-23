@@ -1,5 +1,9 @@
 import db
 
+def item_count():
+    sql = "SELECT COUNT(*) FROM items"
+    return db.query(sql)[0][0]
+
 def get_all_classes():
     sql = "SELECT  title, value FROM classes ORDER BY id"
     result = db.query(sql)
@@ -9,7 +13,7 @@ def get_all_classes():
     for title, value in result:
         classes[title].append(value)
     return classes
-    
+
 def add_item(book_name, author, grade, review, user_id, classes):
     sql = """INSERT INTO items (book_name, author, grade, review, user_id) 
             VALUES (?, ?, ?, ?, ?)"""
@@ -19,7 +23,7 @@ def add_item(book_name, author, grade, review, user_id, classes):
     sql = "INSERT INTO item_classes (item_id, title, value) VALUES (?,?, ?)"
     for title, value in classes:
         db.execute(sql, [item_id, title, value])
-        
+
 def create_comment(item_id, user_id, comment):
     sql = "INSERT INTO comments (item_id, user_id, comment) VALUES (?,?, ?)"
     db.execute(sql, [item_id, user_id, comment])
@@ -35,13 +39,17 @@ def get_classes(item_id):
     sql = "SELECT  title, value FROM item_classes WHERE item_id = ?"
     return db.query(sql, [item_id])
 
-def get_items():
+def get_items(page, page_size):
     sql = """SELECT items.id, items.book_name, items.author,
             items.grade, users.id user_id, users.username
-            FROM items JOIN users ON items.user_id = users.id
+            FROM items, users
+            WHERE items.user_id = users.id
             GROUP BY items.id
-            ORDER BY items.id DESC"""
-    return db.query(sql)
+            ORDER BY items.id DESC
+            LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, [limit, offset])
 
 def get_item(item_id):
     sql = """SELECT items.id,

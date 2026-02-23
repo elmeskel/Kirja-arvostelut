@@ -6,11 +6,19 @@ def get_user(user_id):
     result = db.query(sql, [user_id])
     return result[0] if result else None
 
-def get_reviews(user_id):
+def review_count(user_id):
+    sql = """SELECT COUNT(*) FROM items
+            WHERE items.user_id = ?"""
+    return db.query(sql, [user_id])[0][0]
+
+def get_reviews(user_id, page, page_size):
     sql = """SELECT id, book_name, author, grade
             FROM items WHERE user_id = ?
-            ORDER BY id DESC"""
-    return db.query(sql, [user_id])
+            ORDER BY id DESC
+            LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, [user_id, limit, offset])
 
 def create_user(username, password):
     password_hash = generate_password_hash(password)
