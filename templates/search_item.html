@@ -6,7 +6,8 @@
 
 <h2>Hae arvosteluita</h2>
 <form action="/search_item" method="GET">
-    Hakusana: <input type="text" name="query" value={{ query }}>
+    <label for="query">Hakusana: </label>
+    <input type="text" name="query" id="query" value={{ query }}>
     <input type="submit" value="Hae">
 </form>
 
