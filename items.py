@@ -68,8 +68,11 @@ def update_item(item_id,book_name, author, grade, review, classes):
     for class_title, class_value in classes:
         db.execute(sql, [item_id, class_title, class_value])
 
-
 def delete_item(item_id):
+    sql = "DELETE FROM comments WHERE item_id == ?"
+    db.execute(sql, [item_id])
+    sql = "DELETE FROM item_classes WHERE item_id == ?"
+    db.execute(sql, [item_id])
     sql = "DELETE FROM items WHERE id == ?"
     db.execute(sql, [item_id])
 
