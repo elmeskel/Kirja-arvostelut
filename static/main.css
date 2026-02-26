@@ -2,7 +2,7 @@ body {
   margin: auto;
   max-width: 50em;
   font-family: sans-serif;
-  background: linear-gradient(to right, magenta, cyan);
+  background: linear-gradient(to right, lightyellow, rgba(174, 174, 84, 0.565));
 }
 
 .header {
@@ -13,7 +13,7 @@ body {
 
 .nav {
   border: 7px double black;
-  background: linear-gradient(to bottom, magenta, cyan);
+  background-color: lightyellow;
   text-align: center;
   margin: 1em;
   padding: 0.5em;
@@ -24,12 +24,12 @@ body {
   border: 2px solid black;
   margin: 1em;
   padding: 0.2em 0.5em;
-  background: linear-gradient(to right,cyan, magenta);
+  background: linear-gradient(to right,darkgrey, lightgrey);
 }
 
 .info {
-  border: 2px solid black;
   margin: 1em;
   padding: 0.5em;
   background-color: darkgrey;
+  color: white
 }

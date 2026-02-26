@@ -15,7 +15,8 @@
     {% for item in results %}
     <div class="item">
     <a href="/item/{{ item.id }}">
-        {{ item.book_name}} — {{ item.author }} — {{ item.grade }} </a>
+        {{ item.book_name}} — {{ item.grade }} </a> <br/>
+        Kirjailija: {{ item.author }}
     </div>
     {% endfor %}
 {% endif %}
