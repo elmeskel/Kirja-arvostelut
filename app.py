@@ -59,16 +59,15 @@ def show_user(user_id,page=1):
     user = users.get_user(user_id)
     if not user:
         abort(404)
-
     page_size = 10
     review_count = users.review_count(user_id)
     page_count = math.ceil(review_count / page_size)
     page_count = max(page_count, 1)
 
     if page < 1:
-        return redirect("/user/<int:user_id>/1")
+        return redirect("/user/" + str(user_id) + "/1")
     if page > page_count:
-        return redirect("/user/<int:user_id>/" + str(page_count))
+        return redirect("/user/" + str(user_id) + "/" + str(page_count))
 
     user_items = users.get_reviews(user_id, page, page_size)
     return render_template("show_user.html", count=review_count, user=user,
