@@ -32,3 +32,5 @@ CREATE TABLE item_classes (
     title TEXT,
     value TEXT
 );
+
+CREATE INDEX idx_item_comments ON comments (item_id);
