@@ -41,9 +41,10 @@ def get_classes(item_id):
 
 def get_items(page, page_size):
     sql = """SELECT items.id, items.book_name, items.author,
-            items.grade, users.id user_id, users.username
-            FROM items, users
-            WHERE items.user_id = users.id
+            items.grade, users.id user_id, users.username,
+            COUNT(comments.id) comment_count
+            FROM items JOIN users ON items.user_id = users.id
+                        LEFT JOIN comments ON items.id = comments.item_id
             GROUP BY items.id
             ORDER BY items.id DESC
             LIMIT ? OFFSET ?"""
