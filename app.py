@@ -3,10 +3,10 @@ import secrets
 import re
 from flask import Flask
 from flask import abort, flash, g, redirect, render_template, request, session
-import config
 import markupsafe
 import math
 import time
+import config
 import items
 import users
 
