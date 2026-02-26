@@ -7,49 +7,52 @@
     <title>{{ item.book_name }}</title>
 </head>
 
-<body>
-    <h2>{{ item.book_name }}</h2>
-    <h3>{{ item.author }}</h3>
 
-    <p>
-        Arvion luonut: <a href="/user/{{ item.user_id }}">{{item.username}}</a>
-    </p>
-    <p>
-        Kokonaisarvosana: {{ item.grade}}
-    </p>
-    <p>
-        Arvio:<br>{{ item.review | show_lines }}
-    </p>
+<h2>{{ item.book_name }}</h2>
+<h3>{{ item.author }}</h3>
 
-    <p>
-    {% for class in classes %}
-        <p>
-        {{class.title}}: {{class.value}}
-        </p>
-    {% endfor %}
-    </p>
+<p>
+    Arvion luonut: <a href="/user/{{ item.user_id }}">{{item.username}}</a>
+</p>
+<p>
+    Kokonaisarvosana: {{ item.grade}}
+</p>
+<p>
+    Arvio:<br>{{ item.review | show_lines }}
+</p>
 
-    {% if session.user_id == item.user_id%}
+<p>
+{% for class in classes %}
     <p>
-        <a href="/edit_item/{{ item.id }}">Muokkaa arvostelua</a>
+    {{class.title}}: {{class.value}}
     </p>
-    <p>
-        <a href="/delete_item/{{ item.id }}">Poista arvostelu</a>
-    </p>
-    {% endif %}
-    <h3>Kommentit</h3>
-    <p>
-        {% for com in comments%}
-            <li><a href="/user/{{ com.user_id }}">{{ com.username }}</a>: {{ com.comment | show_lines}}</li>
-        {% endfor %}
-    </p>
-    <h3>Uusi kommentti</h3>
-    <p>
-    <form action="/new_comment" method="post">
-        <textarea name="comment" rows="5" cols="40" required maxlength="500"></textarea><br>
-        <input type="hidden" name="item_id" value="{{ item.id }}" />
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-        <input type="submit" value="Lisää kommentti" />
-    </form>
-    </p>
+{% endfor %}
+</p>
+
+{% if session.user_id == item.user_id%}
+<p>
+    <a href="/edit_item/{{ item.id }}">Muokkaa arvostelua</a>
+</p>
+<p>
+    <a href="/delete_item/{{ item.id }}">Poista arvostelu</a>
+</p>
+{% endif %}
+
+<h3>Kommentit</h3>
+<p>
+{% for com in comments%}
+<div class="item">
+<a href="/user/{{ com.user_id }}">{{ com.username }}</a>: {{ com.comment | show_lines}}
+</div>
+{% endfor %}
+<div class="item">
+<h3>Uusi kommentti</h3>
+<form action="/new_comment" method="post">
+    <textarea name="comment" rows="5" cols="40" required maxlength="500"></textarea><br>
+    <input type="hidden" name="item_id" value="{{ item.id }}" />
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+    <input type="submit" value="Lisää kommentti" />
+</form>
+
+</div>
     {% endblock %}
