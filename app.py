@@ -1,11 +1,11 @@
 import sqlite3
 import secrets
 import re
+import math
+import time
 from flask import Flask
 from flask import abort, flash, g, redirect, render_template, request, session
 import markupsafe
-import math
-import time
 import config
 import items
 import users
@@ -70,8 +70,9 @@ def show_user(user_id,page=1):
     if page > page_count:
         return redirect("/user/<int:user_id>/" + str(page_count))
 
-    items = users.get_reviews(user_id, page, page_size)
-    return render_template("show_user.html", count=review_count, user=user, items=items, page=page, page_count=page_count)
+    user_items = users.get_reviews(user_id, page, page_size)
+    return render_template("show_user.html", count=review_count, user=user,
+                            items=user_items, page=page, page_count=page_count)
 
 @app.route("/search_item")
 def search_item():
@@ -102,7 +103,7 @@ def new_item():
 def create_item():
     require_login()
     check_csrf()
-    
+
     book_name = request.form["book_name"]
     author = request.form["author"]
     grade = request.form["grade"]
@@ -145,7 +146,7 @@ def edit_item(item_id):
         classes[my_class] = ""
     for entry in items.get_classes(item_id):
         classes[entry["title"]] = entry["value"]
-        
+
     return render_template("edit_item.html", item=item, classes=classes, all_classes=all_classes)
 
 @app.route("/update_item", methods=["POST"])
@@ -202,14 +203,13 @@ def delete_item(item_id):
         if "remove" in request.form:
             items.delete_item(item_id)
             return redirect("/")
-        else:
-            return redirect("/item/" + str(item_id))
+        return redirect("/item/" + str(item_id))
 
 @app.route("/new_comment", methods=["POST"])
 def new_comment():
     require_login()
     check_csrf()
-    
+
     comment = request.form["comment"]
     if not  comment:
         abort(403)
@@ -244,23 +244,23 @@ def create():
 
 @app.route("/login", methods=["GET","POST"])
 def login():
-        if request.method == "GET":
-            return render_template("login.html")
+    if request.method == "GET":
+        return render_template("login.html")
 
-        if request.method == "POST": 
-            username = request.form["username"]
-            password = request.form["password"]
+    if request.method == "POST": 
+        username = request.form["username"]
+        password = request.form["password"]
 
-            user_id = users.check_login(username, password)
-            if user_id:
-                session["user_id"] = user_id
-                session["username"] = username
-                session["csrf_token"] = secrets.token_hex(16)
-                flash("Tervetuloa "+username+"!")
-                return redirect("/")
-            else:
-                flash("VIRHE: väärä tunnus tai salasana")
-                return redirect("/login")
+        user_id = users.check_login(username, password)
+        if user_id:
+            session["user_id"] = user_id
+            session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
+            flash("Tervetuloa "+username+"!")
+            return redirect("/")
+        
+        flash("VIRHE: väärä tunnus tai salasana")
+        return redirect("/login")
 
 @app.route("/logout")
 def logout():

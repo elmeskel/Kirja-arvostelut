@@ -15,10 +15,10 @@ def get_all_classes():
     return classes
 
 def add_item(book_name, author, grade, review, user_id, classes):
-    sql = """INSERT INTO items (book_name, author, grade, review, user_id) 
+    sql = """INSERT INTO items (book_name, author, grade, review, user_id)
             VALUES (?, ?, ?, ?, ?)"""
     db.execute(sql, [book_name, author, grade, review, user_id])
-    
+
     item_id = db.last_insert_id()
     sql = "INSERT INTO item_classes (item_id, title, value) VALUES (?,?, ?)"
     for title, value in classes:
@@ -73,10 +73,10 @@ def update_item(item_id,book_name, author, grade, review, classes):
                                 review = ?
                             WHERE id == ?"""
     db.execute(sql, [book_name, author, grade, review, item_id])
-    
+
     sql = "DELETE FROM item_classes WHERE item_id = ?"
     db.execute(sql, [item_id])
-    
+
     sql = "INSERT INTO item_classes (item_id, title, value) VALUES (?, ?, ?)"
     for class_title, class_value in classes:
         db.execute(sql, [item_id, class_title, class_value])
