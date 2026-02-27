@@ -12,6 +12,53 @@
 * Pääasiallinen tietokohde on arvostelu ja toissijainen tietokohde kommentti.
 
 
+## Sovelluksen toiminta suurella tietomäärällä
+Suuri määrä testidataa luotiin `seed.py` tiedoston avulla. 
+Käytännössä se luo:
+* tuhat käyttäjää
+* sata tuhatta arvostelua
+* miljoona kommenttia
+Eniten raitusta tämä tuottaa etusivulle, joka pyrkii näyttämään kaikki 100 000 arvostelua kerralla. Yrittäessä käynnistää sovellusta ilman toimenpiteitä etusivu ei ladannut käytännössä ollenkaan. Sivun latausta saatiin nopeutettua huomattavasti lisäämällä siihen sivutus, jossa etusivu näyttää kymmenen arvostelua kerralla. Ideana on, että arvostelut näytetään dynaamisesti, eli ne ladataan aina erikseen käyttäjän klikatessa seruaavan sivun. Etusivun lataus kestää sivutuksella avitettuna silti noin 5 s, mikä on käyttökokemusta olennaisesti. Alla neljän ensimmäisen sivun läpi selaaminen pelkällä sivutuksella:
+```
+elapsed time: 5.03 s
+127.0.0.1 - - [26/Feb/2026 15:13:22] "GET / HTTP/1.1" 200 -
+elapsed time: 0.03 s
+127.0.0.1 - - [26/Feb/2026 15:13:22] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 5.11 s
+127.0.0.1 - - [26/Feb/2026 15:13:49] "GET /2 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [26/Feb/2026 15:13:49] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 4.69 s
+127.0.0.1 - - [26/Feb/2026 15:13:56] "GET /3 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [26/Feb/2026 15:13:56] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 5.11 s
+127.0.0.1 - - [26/Feb/2026 15:14:05] "GET /4 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [26/Feb/2026 15:14:05] "GET /static/main.css HTTP/1.1" 304 -
+```
+Ongelma juontuu siitä, että kommenttien lukumäärän selvitys pelkän arvostelun pohjalta on vaikeaa ja täten hidasta. Tätä nopeutettiin lisäämällä skeemaan indeksointi:
+`CREATE INDEX idx_item_comments ON comments (item_id);`
+Tällöin sivujen vaihto saatiin nopeutettua sekunnin sadasosien tasolle:
+```
+elapsed time: 0.01 s
+127.0.0.1 - - [26/Feb/2026 15:21:08] "GET /1 HTTP/1.1" 200 -
+elapsed time: 0.02 s
+127.0.0.1 - - [26/Feb/2026 15:21:08] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 0.01 s
+127.0.0.1 - - [26/Feb/2026 15:21:21] "GET /2 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [26/Feb/2026 15:21:21] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 0.01 s
+127.0.0.1 - - [26/Feb/2026 15:21:22] "GET /3 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [26/Feb/2026 15:21:22] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 0.01 s
+127.0.0.1 - - [26/Feb/2026 15:21:23] "GET /4 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [26/Feb/2026 15:21:23] "GET /static/main.css HTTP/1.1" 304 -
+```
+
 ## Sovelluksen asennus
 
 Asenna `flask`-kirjasto:
@@ -33,7 +80,4 @@ Voit käynnistää sovelluksen näin:
 $ flask run
 ```
 
-Asennuksen mukana on tiedosto `seed.py`, jonka ajamalla voit luoda ison määrän testidataa sovelluksen testaamiseen. Käytännössä se luo:
-* tuhat käyttäjää
-* sata tuhatta arvostelua
-* miljoona kommenttia
+Asennuksen mukana on tiedosto `seed.py`, jonka ajamalla voit luoda ison määrän testidataa sovelluksen testaamiseen (kts. "Sovelluksen toiminta suurella tietomäärällä").
