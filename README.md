@@ -33,3 +33,7 @@ Voit käynnistää sovelluksen näin:
 $ flask run
 ```
 
+Asennuksen mukana on tiedosto `seed.py`, jonka ajamalla voit luoda ison määrän testidataa sovelluksen testaamiseen. Käytännössä se luo:
+* tuhat käyttäjää
+* sata tuhatta arvostelua
+* miljoona kommenttia
