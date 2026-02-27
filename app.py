@@ -246,7 +246,7 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
 
-    if request.method == "POST": 
+    if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
 
@@ -257,7 +257,7 @@ def login():
             session["csrf_token"] = secrets.token_hex(16)
             flash("Tervetuloa "+username+"!")
             return redirect("/")
-        
+
         flash("VIRHE: väärä tunnus tai salasana")
         return redirect("/login")
 
